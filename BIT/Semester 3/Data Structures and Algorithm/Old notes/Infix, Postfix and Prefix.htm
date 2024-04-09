@@ -1,0 +1,198 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<!-- saved from url=(0043)http://www.cs.man.ac.uk/~pjj/cs212/fix.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Infix, Postfix and Prefix</title>
+<meta name="keywords" content="?, ?">
+<meta name="description" content="?">
+</head>
+<body>
+
+<a href="http://www.cs.man.ac.uk/~pjj/cs212/index.html">UP</a>
+
+<h1>Infix, Postfix and Prefix</h1>
+
+Infix, Postfix and Prefix notations are three different but equivalent ways of
+writing expressions. It is easiest to demonstrate the differences by looking
+at examples of operators that take two operands.
+
+<dl>
+<dt>
+Infix notation: X + Y
+</dt><dd>
+Operators are written in-between their operands.
+This is the usual way we write expressions.
+An expression such as
+<code>A&nbsp;*&nbsp;(&nbsp;B&nbsp;+&nbsp;C&nbsp;)&nbsp;/&nbsp;D</code>
+is usually taken to mean something like:
+"First add B and C together, then multiply the result by A, then divide
+by D to give the final answer."
+<p>
+
+Infix notation needs extra information to make the order of evaluation of the
+operators clear: rules built into the language about operator precedence and
+associativity, and brackets <code>(&nbsp;)</code> to allow users to override
+these rules. For example, the usual rules for associativity say that we
+perform operations from left to right, so the multiplication by A is assumed
+to come before the division by D. Similarly, the usual rules for precedence
+say that we perform multiplication and division before we perform addition and
+subtraction.
+(see <a href="http://www.cs.man.ac.uk/~pjj/cs212/ho/node3.html#SECTION00031000000000000000">CS2121 lecture</a>).
+</p><p>
+
+</p></dd><dt>
+Postfix notation (also known as "Reverse Polish notation"): X Y +
+</dt><dd>
+Operators are written after their operands. The infix expression given above
+is equivalent to
+<code>A&nbsp;B&nbsp;C&nbsp;+&nbsp;*&nbsp;D&nbsp;/</code>
+<br>
+The order of evaluation of operators is always left-to-right, and brackets
+cannot be used to change this order. Because the "+" is to the left of the
+"*" in the example above, the addition must be performed before the
+multiplication.
+<br>
+Operators act on values immediately to the left of them. For example, the "+"
+above uses the "B" and "C". We can add (totally unnecessary) brackets to make
+this explicit:
+<br>
+<code>( (A (B C +) *) D /)</code>
+<br>
+Thus, the "*" uses the two values immediately preceding: "A", and the result
+of the addition. Similarly, the "/" uses the result of the multiplication
+and the "D".
+<p>
+</p></dd><dt>
+Prefix notation (also known as "Polish notation"): + X Y
+</dt><dd>
+Operators are written before their operands. The expressions given above are
+equivalent to
+<code>/&nbsp;*&nbsp;A&nbsp;+&nbsp;B&nbsp;C&nbsp;D</code>
+<br>
+As for Postfix, operators are evaluated left-to-right and brackets are
+superfluous. Operators act on the two nearest values on the right. I have
+again added (totally unnecessary) brackets to make this clear:
+<br>
+<code>(/ (* A (+ B C) ) D)</code>
+
+<p>
+<a name="L2R">
+Although Prefix "operators are evaluated left-to-right", they use values to
+their right, and if these values themselves involve computations then this
+changes the order that the operators have to be evaluated in. In the example
+above, although the division is the first operator on the left, it acts on the
+result of the multiplication, and so the multiplication has to happen before
+the division (and similarly the addition has to happen before the
+multiplication).
+<br>
+Because Postfix operators use values to their left, any values involving
+computations will already have been calculated as we go left-to-right, and so
+the order of evaluation of the operators is not disrupted in the same way as
+in Prefix expressions.
+</a>
+
+</p></dd></dl>
+
+<p>In all three versions, the operands occur in the same order, and just the
+operators have to be moved to keep the meaning correct. (This is particularly
+important for asymmetric operators like subtraction and division:
+<code>A&nbsp;-&nbsp;B</code> does not mean the same as
+<code>B&nbsp;-&nbsp;A</code>; the former is equivalent to
+<code>A&nbsp;B&nbsp;-</code> or <code>-&nbsp;A&nbsp;B</code>, the latter to
+<code>B&nbsp;A&nbsp;-</code> or <code>-&nbsp;B&nbsp;A</code>).
+<!--
+<BR>
+The order of the operators in a postfix expression can be (but doesn't have to
+be) the opposite of their order in the corresponding prefix expression.
+-->
+
+</p><p>Examples:
+<table border="1">
+<tbody><tr><th>Infix</th><th>Postfix</th><th>Prefix</th><th>Notes
+
+</th></tr><tr><td><code>A&nbsp;*&nbsp;B&nbsp;+&nbsp;C&nbsp;/&nbsp;D</code>
+</td><td><code>A&nbsp;B&nbsp;*&nbsp;C&nbsp;D&nbsp;/&nbsp;+</code>
+</td><td><code>+&nbsp;*&nbsp;A&nbsp;B&nbsp;/&nbsp;C&nbsp;D</code>
+</td><td>multiply A and B,<br>divide C by D,<br>add the results
+
+</td></tr><tr><td><code>A&nbsp;*&nbsp;(B&nbsp;+&nbsp;C)&nbsp;/&nbsp;D</code>
+</td><td><code>A&nbsp;B&nbsp;C&nbsp;+&nbsp;*&nbsp;D&nbsp;/</code>
+</td><td><code>/&nbsp;*&nbsp;A&nbsp;+&nbsp;B&nbsp;C&nbsp;D</code>
+</td><td>add B and C,<br>multiply by A,<br>divide by D
+
+</td></tr><tr><td><code>A&nbsp;*&nbsp;(B&nbsp;+&nbsp;C&nbsp;/&nbsp;D)</code>
+</td><td><code>A&nbsp;B&nbsp;C&nbsp;D&nbsp;/&nbsp;+&nbsp;*</code>
+</td><td><code>*&nbsp;A&nbsp;+&nbsp;B&nbsp;/&nbsp;C&nbsp;D</code>
+</td><td>divide C by D,<br>add B,<br>multiply by A
+
+</td></tr></tbody></table>
+
+</p><hr>
+<h2>Converting between these notations</h2>
+
+The most straightforward method is to start by inserting all the implicit
+brackets that show the order of evaluation e.g.:
+
+<table border="1">
+<tbody><tr><th>Infix</th><th>Postfix</th><th>Prefix
+
+</th></tr><tr><td><code>( (A * B) + (C / D) )</code>
+</td><td><code>( (A B *) (C D /) +)</code>
+</td><td><code>(+ (* A B) (/ C D) )</code>
+
+</td></tr><tr><td><code>((A * (B + C) ) / D)</code>
+</td><td><code>( (A (B C +) *) D /)</code>
+</td><td><code>(/ (* A (+ B C) ) D)</code>
+
+</td></tr><tr><td><code>(A * (B + (C / D) ) )</code>
+</td><td><code>(A (B (C D /) +) *)</code>
+</td><td><code>(* A (+ B (/ C D) ) )</code>
+
+</td></tr></tbody></table>
+
+You can convert directly between these bracketed forms simply by moving the
+operator within the brackets e.g.
+<code>(X&nbsp;+&nbsp;Y)</code>
+or
+<code>(X&nbsp;Y&nbsp;+)</code>
+or
+<code>(+&nbsp;X&nbsp;Y)</code>.
+Repeat this for all the operators in an expression, and finally remove any
+superfluous brackets.
+
+<p>
+You can use a similar trick to convert to and from parse trees - each
+bracketed triplet of an operator and its two operands (or sub-expressions)
+corresponds to a node of the tree. The corresponding parse trees are:
+
+</p><pre>			      /			   *
+      +			     / \		  / \
+     / \		    *   D		 A   +
+    /   \		   / \			    / \
+   *     /		  A   +			   B   /
+  / \   / \		     / \		      / \
+ A   B C   D		    B   C		     C   D
+
+((A*B)+(C/D))		((A*(B+C))/D) 		(A*(B+(C/D)))
+</pre>
+
+<hr>
+<h2>Computer Languages</h2>Because Infix is so common in mathematics, it is much easier to read, and
+so is used in most computer languages
+(e.g. <a href="http://www.cs.man.ac.uk/~pjj/cs212/ho/node5.html">a simple Infix calculator</a>).
+However, Prefix is often used for operators that take a single operand
+(e.g. negation) and function calls.
+
+<p>
+Although Postfix and Prefix notations have similar complexity, Postfix is
+slightly easier to evaluate in simple circumstances, such as in some
+calculators (e.g. <a href="http://www.cs.man.ac.uk/~pjj/cs212/ho/node4.html">a simple Postfix calculator</a>),
+as the operators really are evaluated strictly left-to-right
+(see <a href="http://www.cs.man.ac.uk/~pjj/cs212/fix.html#L2R">note</a> above).
+
+</p><p>
+For lots more information about notations for expressions, see
+<a href="http://www.cs.man.ac.uk/~pjj/cs2111/ho/node2.html">my CS2111 lectures</a>.
+
+
+
+</p></body></html>
